@@ -1,0 +1,111 @@
+#cloud-config
+bootcmd:
+  - cloud-init-per once genhostid dd bs=4 count=1 if=/dev/urandom of=/etc/hostid
+  - |-
+    apply_config(){
+    cat >/etc/netplan/10-private-net.yaml <<EOF && chmod 600 /etc/netplan/10-private-net.yaml && netplan generate && netplan apply
+    network:
+      version: 2
+      ethernets:
+        enp7s0:
+          dhcp4: true
+          nameservers:
+            addresses:
+              - 185.12.64.2
+              - 185.12.64.1
+          routes:
+            - to: default
+              via: 10.70.70.1
+    EOF
+    }
+    test -f /etc/netplan/10-private-net.yaml || apply_config
+
+package_update: true
+package_upgrade: true
+
+packages:
+  - apt-transport-https
+  - curl
+  - wget
+  - gnupg
+  - ca-certificates
+  - lsb-release
+  - jq
+  - bash
+  - dbus-user-session
+  - uidmap
+
+users:
+  - name: runner
+    primary_group: runner
+    groups: users
+    shell: /bin/bash
+    sudo: null
+
+write_files:
+  - path: /etc/hosts
+    append: true
+    content: 10.70.70.2 code.ffmpeg.org
+  - path: /etc/systemd/user/runner.service
+    content: |
+      [Unit]
+      Description=Actions Runner
+      After=docker.service
+
+      [Service]
+      Environment=PATH=%h/.local/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
+      Environment=DOCKER_HOST=unix:///run/user/%U/docker.sock
+      WorkingDirectory=%h
+      ExecStartPre=mkdir -p %h/.local/bin
+      ExecStartPre=bash -c 'VER="$$(curl -s https://data.forgejo.org/api/v1/repos/forgejo/runner/releases/latest | jq .name -r | cut -c 2-)" && wget -O ~/.local/bin/forgejo-runner "https://data.forgejo.org/forgejo/runner/releases/download/v$${VER}/forgejo-runner-$${VER}-linux-amd64" && chmod +x ~/.local/bin/forgejo-runner'
+      ExecStart=%h/.local/bin/forgejo-runner daemon -c /etc/runner/config.yaml
+      ExecReload=kill -s HUP $MAINPID
+      TimeoutSec=0
+      RestartSec=10
+      Restart=on-failure
+
+      [Install]
+      WantedBy=default.target
+  - path: /etc/runner/config.yaml
+    content: |
+      log:
+        level: info
+        job_level: info
+      runner:
+        file: .runner
+        capacity: 1
+        timeout: 1h
+        shutdown_timeout: 1h
+        insecure: false
+        fetch_timeout: 10s
+        fetch_interval: 10s
+        report_interval: 1s
+        labels: ["linux-amd64:docker://ghcr.io/btbn/ffmpeg-builds/base-linux64:latest"]
+      cache:
+        enabled: true
+      container:
+        network: ""
+        enable_ipv6: false
+        privileged: false
+        options:
+        workdir_parent:
+        force_pull: true
+        force_rebuild: true
+
+runcmd:
+  - apt-get remove -y --purge snapd ufw hc-utils
+  - apt-get autoremove -y --purge
+  - mkdir -p /etc/apt/keyrings
+  - curl -fsSL https://download.docker.com/linux/ubuntu/gpg -o /etc/apt/keyrings/docker.asc
+  - chmod a+r /etc/apt/keyrings/docker.asc
+  - echo "deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/docker.asc] https://download.docker.com/linux/ubuntu $(. /etc/os-release && echo $VERSION_CODENAME) stable" > /etc/apt/sources.list.d/docker.list
+  - apt-get update
+  - apt-get install -y docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin docker-ce-rootless-extras
+  - systemctl disable --now docker.service docker.socket
+  - loginctl enable-linger runner
+  - sudo -i -u runner dockerd-rootless-setuptool.sh install
+  - sudo -i -u runner systemctl --user enable docker.service runner.service
+  - sudo -i -u runner mkdir -p ~runner/.local/bin
+  - sudo -i -u runner bash -c 'VER="$(curl -s https://data.forgejo.org/api/v1/repos/forgejo/runner/releases/latest | jq .name -r | cut -c 2-)" && wget -O ~/.local/bin/forgejo-runner "https://data.forgejo.org/forgejo/runner/releases/download/v${VER}/forgejo-runner-${VER}-linux-amd64" && chmod +x ~/.local/bin/forgejo-runner'
+  - sudo -i -u runner ~runner/.local/bin/forgejo-runner register --no-interactive --instance "https://code.ffmpeg.org" --name "runner-$(hostid)" --token !!!TOKEN_HERE!!! 
+  - reboot

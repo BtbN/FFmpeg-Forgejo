@@ -1,0 +1,94 @@
+services:
+  web:
+    image: caddy:2
+    restart: unless-stopped
+    networks:
+      - frontend
+    volumes:
+      - caddy-data:/data
+      - caddy-config:/config
+      - ./caddy:/etc/caddy
+    ports:
+      - 80:8080/tcp
+      - 80:8080/udp
+      - 443:8443/tcp
+      - 443:8443/udp
+    user: "983:983"
+  forgejo:
+    image: codeberg.org/forgejo/forgejo:10
+    environment:
+      - USER_UID=981
+      - USER_GID=981
+      - FORGEJO__database__DB_TYPE=mysql
+      - FORGEJO__database__HOST=/run/mysqld/mysqld.sock
+      - FORGEJO__database__NAME=forgejo
+      - FORGEJO__database__USER=forgejo
+      - FORGEJO__database__PASSWD=${FORGEJO_DB_PASSWORD}
+      - FORGEJO__cache__ADAPTER=redis
+      - FORGEJO__cache__HOST=redis+socket:///var/valkey.sock?db=0&pool_size=100&idle_timeout=180s
+      - FORGEJO__cache__ITEM_TTL=72h
+    restart: unless-stopped
+    networks:
+      - frontend
+    volumes:
+      - /mnt/data/forgejo:/data
+      - /etc/timezone:/etc/timezone:ro
+      - /etc/localtime:/etc/localtime:ro
+      - db-socket:/run/mysqld
+      - type: volume
+        source: valkey-data
+        target: /var/valkey.sock
+        volume:
+          subpath: valkey.sock
+    ports:
+      - 22:22/tcp
+    depends_on:
+      db:
+        condition: service_healthy
+      valkey:
+        condition: service_started
+  db:
+    image: mariadb:11
+    environment:
+      - MARIADB_AUTO_UPGRADE=1
+      - MARIADB_RANDOM_ROOT_PASSWORD=1
+      - MARIADB_USER=forgejo
+      - MARIADB_PASSWORD=${FORGEJO_DB_PASSWORD}
+      - MARIADB_DATABASE=forgejo
+    restart: unless-stopped
+    ulimits:
+      memlock: "262144"
+    networks:
+      - backend
+    volumes:
+      - db-data:/var/lib/mysql
+      - db-socket:/run/mysqld
+    healthcheck:
+      test: ["CMD", "healthcheck.sh", "--connect", "--innodb_initialized"]
+      start_period: 10s
+      interval: 10s
+      timeout: 5s
+      retries: 3
+  valkey:
+    image: valkey/valkey:8
+    restart: unless-stopped
+    networks:
+      - backend
+    volumes:
+      - ./valkey/valkey.conf:/etc/valkey.conf
+      - valkey-data:/data
+    environment:
+      - VALKEY_EXTRA_FLAGS=/etc/valkey.conf
+
+volumes:
+  db-data:
+  db-socket:
+  valkey-data:
+  caddy-data:
+  caddy-config:
+
+networks:
+  frontend:
+    enable_ipv6: true
+  backend:
+    external: false
