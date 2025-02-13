@@ -1,9 +1,39 @@
 {
+	log {
+		output stderr
+		format console
+		level INFO
+	}
+
 	http_port 8080
 	https_port 8443
 	email root@ffmpeg.org
 }
 
 code.ffmpeg.org {
+	@captchaNotPassed {
+		not header Cookie *CaptchaPassed=*
+		path_regexp ^/user/sign_up/?$
+	}
+
+	@captchaPassed {
+		path /user/sign_up/ffmpeg_two
+	}
+
+	handle @captchaNotPassed {
+		root * /etc/caddy/captcha/
+		file_server
+	}
+
+	handle @captchaPassed {
+		header Set-Cookie "CaptchaPassed=true; Path=/; HttpOnly; Max-Age=1800"
+		redir * /user/sign_up
+	}
+
+	handle /robots.txt {
+		root * /etc/caddy/
+		file_server
+	}
+
 	reverse_proxy forgejo:3000
 }

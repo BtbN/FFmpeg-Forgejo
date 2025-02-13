@@ -1,0 +1,40 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html>
+<head>
+    <meta http-equiv="content-type" content="text/html; charset=utf-8">
+    <title>Antispam check</title>
+    <script type="text/javascript">
+        function clicked () {
+            window.location.assign(window.location.href + document.getElementById("pn").value + "_" + document.getElementById("wings").value);
+        }
+    </script>
+</head>
+<body>
+    <h2>Antispam check</h2>
+    <noscript>
+        <div style="position: fixed; top: 0px; left: 0px; z-index: 3000;
+                height: 100%; width: 100%; background-color: #FFFFFF;">
+            <p style="margin-left: 10px">
+                JavaScript is disabled, <br>
+                please either enable JavaScript or edit the
+                URL of this page so it reads /user/sign_up/[Project Name in lower case]_[How many wings does a bird have? (as word)]
+                to continue.
+            </p>
+        </div>
+    </noscript>
+    <form action="/user/sign_up/">
+        <ul>
+            <li>
+                <label for="pn">Project name (in lower case)</label>
+                <input id="pn" name="pn">
+            </li><li>
+                <label for="wings">How many wings does a bird have? (as word)</label>
+                <input id="wings" name="wings">
+            </li>
+        </ul>
+        <p>
+                <button type="button" onclick="clicked()" value="Submit">Continue</button>
+        </p>
+    </form>
+</body>
+</html>
