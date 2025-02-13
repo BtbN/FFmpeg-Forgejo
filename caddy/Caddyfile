@@ -1,16 +1,15 @@
 {
-	log {
-		output stderr
-		format console
-		level INFO
-	}
-
 	http_port 8080
 	https_port 8443
 	email root@ffmpeg.org
 }
 
 code.ffmpeg.org {
+	log {
+		output stderr
+		format console
+	}
+
 	@captchaNotPassed {
 		not header Cookie *CaptchaPassed=*
 		path_regexp ^/user/sign_up/?$
