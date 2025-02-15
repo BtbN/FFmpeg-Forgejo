@@ -36,6 +36,15 @@ services:
       - FORGEJO__storage__MINIO_SECRET_ACCESS_KEY=${OS_ACCESS_KEY}
       - FORGEJO__storage__MINIO_BUCKET=${OS_BUCKET}
       - FORGEJO__storage__MINIO_LOCATION=${OS_LOCATION}
+      - FORGEJO__mailer__ENABLED=true
+      - FORGEJO__mailer__SMTP_ADDR=ffmpeg.org
+      - FORGEJO__mailer__SMTP_PORT=25
+      - FORGEJO__mailer__PROTOCOL=smtp+starttls
+      - FORGEJO__mailer__FROM=code@ffmpeg.org
+      - FORGEJO__mailer__ENABLE_HELO=true
+      - FORGEJO__mailer__HELO_HOSTNAME=code.ffmpeg.org
+      - FORGEJO__mailer__SUBJECT_PREFIX=[FFFjo]
+      - FORGEJO__repository.pull-request__DEFAULT_MERGE_STYLE=rebase
       - FORGEJO__log__MODE=console
       - FORGEJO__log__LEVEL=Info
       - FORGEJO__log__STACKTRACE_LEVEL=None
