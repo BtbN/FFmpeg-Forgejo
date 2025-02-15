@@ -27,6 +27,18 @@ services:
       - FORGEJO__cache__ADAPTER=redis
       - FORGEJO__cache__HOST=redis+socket:///var/valkey.sock?db=0&pool_size=100&idle_timeout=180s
       - FORGEJO__cache__ITEM_TTL=72h
+      - FORGEJO__storage__STORAGE_TYPE=minio
+      - FORGEJO__storage__SERVE_DIRECT=false
+      - FORGEJO__storage__MINIO_BUCKET_LOOKUP=dns
+      - FORGEJO__storage__MINIO_USE_SSL=${OS_USE_SSL}
+      - FORGEJO__storage__MINIO_ENDPOINT=${OS_ENDPOINT}
+      - FORGEJO__storage__MINIO_ACCESS_KEY_ID=${OS_ACCESS_ID}
+      - FORGEJO__storage__MINIO_SECRET_ACCESS_KEY=${OS_ACCESS_KEY}
+      - FORGEJO__storage__MINIO_BUCKET=${OS_BUCKET}
+      - FORGEJO__storage__MINIO_LOCATION=${OS_LOCATION}
+      - FORGEJO__log__MODE=console
+      - FORGEJO__log__LEVEL=Info
+      - FORGEJO__log__STACKTRACE_LEVEL=None
     restart: unless-stopped
     networks:
       - frontend
