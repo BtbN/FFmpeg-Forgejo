@@ -21,8 +21,8 @@ services:
       - USER_GID=981
       - FORGEJO__database__DB_TYPE=mysql
       - FORGEJO__database__HOST=/run/mysqld/mysqld.sock
-      - FORGEJO__database__NAME=forgejo
-      - FORGEJO__database__USER=forgejo
+      - FORGEJO__database__NAME=${FORGEJO_DB_DATABASE}
+      - FORGEJO__database__USER=${FORGEJO_DB_USER}
       - FORGEJO__database__PASSWD=${FORGEJO_DB_PASSWORD}
       - FORGEJO__cache__ADAPTER=redis
       - FORGEJO__cache__HOST=redis+socket:///var/valkey.sock?db=0&pool_size=100&idle_timeout=180s
@@ -52,7 +52,7 @@ services:
     networks:
       - frontend
     volumes:
-      - /mnt/data/forgejo:/data
+      - ${FORGEJO_DATA_DIR}:/data
       - /etc/timezone:/etc/timezone:ro
       - /etc/localtime:/etc/localtime:ro
       - db-socket:/run/mysqld
@@ -73,9 +73,9 @@ services:
     environment:
       - MARIADB_AUTO_UPGRADE=1
       - MARIADB_RANDOM_ROOT_PASSWORD=1
-      - MARIADB_USER=forgejo
+      - MARIADB_USER=${FORGEJO_DB_USER}
       - MARIADB_PASSWORD=${FORGEJO_DB_PASSWORD}
-      - MARIADB_DATABASE=forgejo
+      - MARIADB_DATABASE=${FORGEJO_DB_DATABASE}
     restart: unless-stopped
     ulimits:
       memlock: "262144"
