@@ -44,6 +44,8 @@ services:
       - FORGEJO__mailer__ENABLE_HELO=true
       - FORGEJO__mailer__HELO_HOSTNAME=code.ffmpeg.org
       - FORGEJO__mailer__SUBJECT_PREFIX=[FFFjo]
+      - FORGEJO__queue__TYPE=redis
+      - FORGEJO__queue__CONN_STR=redis+socket:///var/valkey_queue.sock?db=0&pool_size=25&idle_timeout=180s
       - FORGEJO__repository.pull-request__DEFAULT_MERGE_STYLE=rebase
       - FORGEJO__log__MODE=console
       - FORGEJO__log__LEVEL=Info
@@ -61,12 +63,19 @@ services:
         target: /var/valkey.sock
         volume:
           subpath: valkey.sock
+      - type: volume
+        source: valkey-queue-data
+        target: /var/valkey_queue.sock
+        volume:
+          subpath: valkey.sock
     ports:
       - 22:22/tcp
     depends_on:
       db:
         condition: service_healthy
-      valkey:
+      valkey_main:
+        condition: service_started
+      valkey_queue:
         condition: service_started
   db:
     image: mariadb:11
@@ -90,14 +99,20 @@ services:
       interval: 10s
       timeout: 5s
       retries: 3
-  valkey:
+  valkey_main:
     image: valkey/valkey:8
     restart: unless-stopped
-    networks:
-      - backend
     volumes:
       - ./valkey/valkey.conf:/etc/valkey.conf
       - valkey-data:/data
+    environment:
+      - VALKEY_EXTRA_FLAGS=/etc/valkey.conf
+  valkey_queue:
+    image: valkey/valkey:8
+    restart: unless-stopped
+    volumes:
+      - ./valkey/valkey_queue.conf:/etc/valkey.conf
+      - valkey-queue-data:/data
     environment:
       - VALKEY_EXTRA_FLAGS=/etc/valkey.conf
 
@@ -105,6 +120,7 @@ volumes:
   db-data:
   db-socket:
   valkey-data:
+  valkey-queue-data:
   caddy-data:
   caddy-config:
 
