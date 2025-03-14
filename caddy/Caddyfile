@@ -35,5 +35,7 @@ code.ffmpeg.org {
 		file_server
 	}
 
-	reverse_proxy forgejo:3000
+	reverse_proxy anubis:8080 {
+		header_up X-Real-Ip {remote_host}
+	}
 }
