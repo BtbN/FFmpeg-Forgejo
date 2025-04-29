@@ -21,7 +21,7 @@ services:
       - frontend
     environment:
       - BIND=:8080
-      - DIFFICULTY=5
+      - DIFFICULTY=4
       - TARGET=http://forgejo:3000
   forgejo:
     image: codeberg.org/forgejo/forgejo:11
