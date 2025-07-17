@@ -24,7 +24,7 @@ services:
       - DIFFICULTY=4
       - TARGET=http://forgejo:3000
   forgejo:
-    image: codeberg.org/forgejo/forgejo:11
+    image: codeberg.org/forgejo/forgejo:12
     environment:
       - USER_UID=981
       - USER_GID=981
