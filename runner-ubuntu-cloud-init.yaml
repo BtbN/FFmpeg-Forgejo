@@ -60,9 +60,11 @@ write_files:
       ExecStartPre=bash -c 'VER="$$(curl -s https://data.forgejo.org/api/v1/repos/forgejo/runner/releases/latest | jq .name -r | cut -c 2-)" && curl -Ls "https://code.forgejo.org/forgejo/runner/releases/download/v$${VER}/forgejo-runner-$${VER}-linux-amd64.xz" | unxz > ~/.local/bin/forgejo-runner && chmod +x ~/.local/bin/forgejo-runner'
       ExecStart=%h/.local/bin/forgejo-runner daemon -c /etc/runner/config.yaml
       ExecReload=kill -s HUP $MAINPID
-      TimeoutSec=0
+      TimeoutStartSec=30
+      TimeoutStopSec=2h
       RestartSec=10
       Restart=on-failure
+      RuntimeMaxSec=72h
 
       [Install]
       WantedBy=default.target
@@ -79,6 +81,9 @@ write_files:
       ExecStartPre=bash -c 'curl -L https://github.com/stepchowfun/docuum/releases/latest/download/docuum-$$(uname -m)-unknown-linux-gnu -o ~/.local/bin/docuum && chmod +x ~/.local/bin/docuum'
       ExecStart=%h/.local/bin/docuum --threshold 50%
       Restart=on-failure
+      RestartSec=10
+      TimeoutStopSec=10
+      RuntimeMaxSec=96h
 
       [Install]
       WantedBy=default.target
