@@ -56,6 +56,7 @@ services:
       - FORGEJO__queue__TYPE=redis
       - FORGEJO__queue__CONN_STR=redis+socket:///var/valkey_queue.sock?db=0&pool_size=25&idle_timeout=180s
       - FORGEJO__repository.pull-request__DEFAULT_MERGE_STYLE=rebase
+      - FORGEJO__repository__USE_COMPAT_SSH_URI=false
       - FORGEJO__cron.repo_health_check__TIMEOUT=300s
       - FORGEJO__log__MODE=console
       - FORGEJO__log__LEVEL=Info
