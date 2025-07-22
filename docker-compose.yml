@@ -54,6 +54,13 @@ services:
       - FORGEJO__mailer__ENABLE_HELO=true
       - FORGEJO__mailer__HELO_HOSTNAME=code.ffmpeg.org
       - FORGEJO__mailer__SUBJECT_PREFIX=[FFFjo]
+      - FORGEJO__email.incoming__ENABLED=true
+      - FORGEJO__email.incoming__REPLY_TO_ADDRESS=${IMAP_ADDRESS}
+      - FORGEJO__email.incoming__HOST=${IMAP_HOST}
+      - FORGEJO__email.incoming__PORT=${IMAP_PORT}
+      - FORGEJO__email.incoming__USE_TLS=${IMAP_TLS}
+      - FORGEJO__email.incoming__USERNAME=${IMAP_USER}
+      - FORGEJO__email.incoming__PASSWORD=${IMAP_PASS}
       - FORGEJO__queue__TYPE=redis
       - FORGEJO__queue__CONN_STR=redis+socket:///var/valkey_queue.sock?db=0&pool_size=25&idle_timeout=180s
       - FORGEJO__repository.pull-request__DEFAULT_MERGE_STYLE=rebase
