@@ -36,6 +36,7 @@ services:
       - FORGEJO__cache__ADAPTER=redis
       - FORGEJO__cache__HOST=redis+socket:///var/valkey.sock?db=0&pool_size=100&idle_timeout=180s
       - FORGEJO__cache__ITEM_TTL=72h
+      - FORGEJO__server__LANDING_PAGE=/FFmpeg
       - FORGEJO__storage__STORAGE_TYPE=minio
       - FORGEJO__storage__SERVE_DIRECT=false
       - FORGEJO__storage__MINIO_BUCKET_LOOKUP=dns
