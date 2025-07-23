@@ -69,6 +69,7 @@ services:
       - FORGEJO__log__MODE=console
       - FORGEJO__log__LEVEL=Info
       - FORGEJO__log__STACKTRACE_LEVEL=None
+      - FORGEJO__webhook__ALLOWED_HOST_LIST=external,ircbot
     restart: unless-stopped
     networks:
       - frontend
@@ -96,6 +97,25 @@ services:
         condition: service_started
       valkey_queue:
         condition: service_started
+  ircbot:
+    build:
+      context: .
+      pull: true
+      dockerfile_inline: |
+        FROM python:3.13-slim
+        RUN pip install --no-cache https://github.com/BtbN/SimpleIrcRelay/archive/refs/heads/master.zip
+    environment:
+      - IRC_SERVER=${IRC_SERVER}
+      - IRC_PORT=${IRC_PORT}
+      - IRC_CHANNEL=${IRC_CHANNEL}
+      - IRC_NICK=${IRC_NICK}
+      - IRC_HTTP_HOST=0.0.0.0
+      - IRC_HTTP_PORT=8787
+      - PYTHONUNBUFFERED=1
+    restart: unless-stopped
+    networks:
+      - frontend
+    command: simpleircrelay
   db:
     image: mariadb:11
     environment:
