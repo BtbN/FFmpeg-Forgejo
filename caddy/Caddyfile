@@ -10,6 +10,12 @@ code.ffmpeg.org {
 		format console
 	}
 
+	@oldIssues {
+		path_regexp ^/FFmpeg/FFmpeg/issues/([0-9]{1,4}|1[0-9]{4})$
+	}
+
+	redir @oldIssues https://trac.ffmpeg.org/ticket/{re.oldIssues.1}
+
 	@captchaNotPassed {
 		not header Cookie *CaptchaPassed=*
 		path_regexp ^/user/sign_up/?$
