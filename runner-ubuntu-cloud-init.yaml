@@ -101,7 +101,7 @@ write_files:
         fetch_timeout: 10s
         fetch_interval: 10s
         report_interval: 1s
-        labels: ["linux-amd64:docker://ghcr.io/btbn/ffmpeg-builds/base-linux64:latest"]
+        labels: ["linux-amd64:docker://ghcr.io/btbn/ffmpeg-builds/base-linux64:latest", "utilities:docker://ghcr.io/btbn/ffmpeg-builds/base-linux64:latest"]
       cache:
         enabled: true
       container:
