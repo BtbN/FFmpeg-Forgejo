@@ -11,7 +11,7 @@ trap "jobs -p | xargs -r kill; docker compose up -d; wait; rm -rf cur_backup" EX
 cp .env cur_backup/envfile.env
 
 docker compose stop forgejo
-docker compose exec -T db mariadb-dump -u "$FORGEJO_DB_USER" --password="$FORGEJO_DB_PASSWORD" "$FORGEJO_DB_DATABASE" | gzip > cur_backup/database.sql.gz
+docker compose exec -T db mariadb-dump --opt --single-transaction --extended-insert -u "$FORGEJO_DB_USER" --password="$FORGEJO_DB_PASSWORD" "$FORGEJO_DB_DATABASE" | gzip > cur_backup/database.sql.gz
 
 docker run --pull=always --rm -u root -w / \
 	--mount type=bind,src="$PWD"/cur_backup,dst=/cur_backup,readonly \
