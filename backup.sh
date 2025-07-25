@@ -1,7 +1,8 @@
 #!/bin/bash
-set -xe
+set -e
 cd "$(dirname "$0")"
 source .env
+set -x
 
 docker run --pull=always --rm -u root -w / \
 	--mount type=bind,src="$PWD",dst=/workdir \
