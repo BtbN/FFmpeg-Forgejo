@@ -28,6 +28,10 @@ services:
     environment:
       - USER_UID=981
       - USER_GID=981
+      - FORGEJO__oauth2__JWT_SECRET=${JWT_SECRET}
+      - FORGEJO__server__LFS_JWT_SECRET=${LFS_JWT_SECRET}
+      - FORGEJO__security__SECRET_KEY=${SECRET_KEY}
+      - FORGEJO__security__INTERNAL_TOKEN=${INTERNAL_TOKEN}
       - FORGEJO__database__DB_TYPE=mysql
       - FORGEJO__database__HOST=/run/mysqld/mysqld.sock
       - FORGEJO__database__NAME=${FORGEJO_DB_DATABASE}
