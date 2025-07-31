@@ -28,6 +28,8 @@ services:
     environment:
       - USER_UID=981
       - USER_GID=981
+      - FORGEJO__server__DOMAIN=code.ffmpeg.org
+      - FORGEJO__service__NO_REPLY_ADDRESS=noreply.code.ffmpeg.org
       - FORGEJO__oauth2__JWT_SECRET=${JWT_SECRET}
       - FORGEJO__server__LFS_JWT_SECRET=${LFS_JWT_SECRET}
       - FORGEJO__security__SECRET_KEY=${SECRET_KEY}
