@@ -4,6 +4,10 @@ cd "$(dirname "$0")"
 source .env
 set -x
 
+if [[ -f ~/mount_backups.sh ]]; then
+	bash ~/mount_backups.sh
+fi
+
 docker run --pull=always --rm -u root -w / \
 	--mount type=bind,src="$PWD",dst=/workdir \
 	ubuntu:latest rm -rf /workdir/cur_backup
@@ -11,7 +15,7 @@ docker run --pull=always --rm -u root -w / \
 mkdir -p ~/backups
 mkdir -p cur_backup/bucket
 rclone mount --use-server-modtime --read-only --allow-other forgejo:code-ffmpeg-storage/ ./cur_backup/bucket &
-trap "jobs -p | xargs -r kill; docker compose up -d; wait; docker run --rm -u root --mount type=bind,src='$PWD',dst=/workdir ubuntu:latest rm -rf /workdir/cur_backup" EXIT
+trap "jobs -p | xargs -r kill; docker compose up -d; mountpoint -q '$HOME/backups' && umount '$HOME/backups' || true; wait; docker run --rm -u root --mount type=bind,src='$PWD',dst=/workdir ubuntu:latest rm -rf /workdir/cur_backup" EXIT
 
 cp .env cur_backup/envfile.env
 
@@ -26,4 +30,4 @@ docker compose start forgejo
 
 docker run --rm -u root -w / \
 	--mount type=bind,src="$PWD"/cur_backup,dst=/cur_backup,readonly \
-	ubuntu:latest tar --exclude=./cur_backup/bucket/repo-archive -zpc ./cur_backup > ~/backups/"$(date "+%s")".tar.gz
+	ubuntu:latest tar --xattrs --acls --exclude=./cur_backup/bucket/repo-archive -zpc ./cur_backup > ~/backups/"$(date "+%s")".tar.gz
