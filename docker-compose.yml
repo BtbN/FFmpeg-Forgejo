@@ -30,6 +30,15 @@ services:
       - USER_GID=981
       - FORGEJO__server__DOMAIN=code.ffmpeg.org
       - FORGEJO__service__NO_REPLY_ADDRESS=noreply.code.ffmpeg.org
+      - FORGEJO__repository.signing__SIGNING_KEY=/data/gitea/conf/signing_key_ed25519.pub
+      - FORGEJO__repository.signing__FORMAT=ssh
+      - FORGEJO__repository.signing__SIGNING_NAME=FFmpeg Forgejo
+      - FORGEJO__repository.signing__SIGNING_EMAIL=code@ffmpeg.org
+      - FORGEJO__repository.signing__DEFAULT_TRUST_MODEL=collaborator
+      - FORGEJO__repository.signing__INITIAL_COMMIT=always
+      - FORGEJO__repository.signing__WIKI=twofa
+      - FORGEJO__repository.signing__CRUD_ACTIONS=pubkey,twofa
+      - FORGEJO__repository.signing__MERGES=pubkey,twofa,commitssigned
       - FORGEJO__oauth2__JWT_SECRET=${JWT_SECRET}
       - FORGEJO__server__LFS_JWT_SECRET=${LFS_JWT_SECRET}
       - FORGEJO__security__SECRET_KEY=${SECRET_KEY}
