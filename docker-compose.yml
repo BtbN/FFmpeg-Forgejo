@@ -117,6 +117,11 @@ services:
       - IRC_NICK=${IRC_NICK}
       - IRC_HTTP_HOST=0.0.0.0
       - IRC_HTTP_PORT=8787
+      - SMTP_HOST=ffmpeg.org
+      - SMTP_PORT=25
+      - SMTP_TLS=true
+      - MAIL_FROM=code@ffmpeg.org
+      - MAIL_TO=ffmpeg-devel@ffmpeg.org
       - PYTHONUNBUFFERED=1
     restart: unless-stopped
     networks:
