@@ -119,6 +119,7 @@ services:
       pull: true
       dockerfile_inline: |
         FROM python:3.13-slim
+        RUN pip install --no-cache --upgrade pip setuptools
         RUN pip install --no-cache https://github.com/BtbN/SimpleIrcRelay/archive/refs/heads/master.zip
     environment:
       - IRC_SERVER=${IRC_SERVER}
@@ -132,6 +133,8 @@ services:
       - SMTP_TLS=true
       - MAIL_FROM=code@ffmpeg.org
       - MAIL_TO=ffmpeg-devel@ffmpeg.org
+      - FJCITOKEN=${GITHUB_CI_FJ_TOKEN}
+      - GHCITOKEN=${GITHUB_CI_GH_TOKEN}
       - PYTHONUNBUFFERED=1
     restart: unless-stopped
     networks:
