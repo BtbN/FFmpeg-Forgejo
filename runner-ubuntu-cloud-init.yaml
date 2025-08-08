@@ -57,7 +57,7 @@ write_files:
       Environment=DOCKER_HOST=unix:///run/user/%U/docker.sock
       WorkingDirectory=%h
       ExecStartPre=mkdir -p %h/.local/bin
-      ExecStartPre=bash -c 'VER="$$(curl -s https://data.forgejo.org/api/v1/repos/forgejo/runner/releases/latest | jq .name -r | cut -c 2-)" && curl -Ls "https://code.forgejo.org/forgejo/runner/releases/download/v$${VER}/forgejo-runner-$${VER}-linux-amd64.xz" | unxz > ~/.local/bin/forgejo-runner && chmod +x ~/.local/bin/forgejo-runner'
+      ExecStartPre=bash -c 'VER="$$(curl -s https://code.forgejo.org/api/v1/repos/forgejo/runner/releases/latest | jq .name -r | cut -c 2-)" && curl -Ls "https://code.forgejo.org/forgejo/runner/releases/download/v$${VER}/forgejo-runner-$${VER}-linux-amd64.xz" | unxz > ~/.local/bin/forgejo-runner && chmod +x ~/.local/bin/forgejo-runner'
       ExecStart=%h/.local/bin/forgejo-runner daemon -c /etc/runner/config.yaml
       ExecReload=kill -s HUP $MAINPID
       TimeoutStartSec=30
@@ -128,6 +128,6 @@ runcmd:
   - sudo -i -u runner systemctl --user enable docker.service runner.service docuum.service
   - sudo -i -u runner mkdir -p ~runner/{.local/bin,.config/docker}
   - echo '{"log-driver": "local"}' | sudo -i -u runner tee ~runner/.config/docker/daemon.json
-  - sudo -i -u runner bash -c 'VER="$(curl -s https://data.forgejo.org/api/v1/repos/forgejo/runner/releases/latest | jq .name -r | cut -c 2-)" && curl -Ls "https://code.forgejo.org/forgejo/runner/releases/download/v${VER}/forgejo-runner-${VER}-linux-amd64.xz" | unxz > ~/.local/bin/forgejo-runner && chmod +x ~/.local/bin/forgejo-runner'
+  - sudo -i -u runner bash -c 'VER="$(curl -s https://code.forgejo.org/api/v1/repos/forgejo/runner/releases/latest | jq .name -r | cut -c 2-)" && curl -Ls "https://code.forgejo.org/forgejo/runner/releases/download/v${VER}/forgejo-runner-${VER}-linux-amd64.xz" | unxz > ~/.local/bin/forgejo-runner && chmod +x ~/.local/bin/forgejo-runner'
   - sudo -i -u runner ~runner/.local/bin/forgejo-runner register --no-interactive --instance "https://code.ffmpeg.org" --name "runner-$(hostid)" --token !!!TOKEN_HERE!!! 
   - reboot
