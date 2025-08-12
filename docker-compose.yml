@@ -135,6 +135,7 @@ services:
       - MAIL_TO=ffmpeg-devel@ffmpeg.org
       - FJCITOKEN=${GITHUB_CI_FJ_TOKEN}
       - GHCITOKEN=${GITHUB_CI_GH_TOKEN}
+      - GHREPO=FFmpeg/FFmpeg-CI
       - PYTHONUNBUFFERED=1
     restart: unless-stopped
     networks:
