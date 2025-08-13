@@ -1,0 +1,95 @@
+bots:
+  # Pathological bots to deny
+  - import: (data)/bots/_deny-pathological.yaml
+  - import: (data)/bots/aggressive-brazilian-scrapers.yaml
+
+  # Aggressively block AI/LLM related bots/agents by default
+  - import: (data)/meta/ai-block-aggressive.yaml
+
+  # Good actors like search engines
+  - import: (data)/crawlers/_allow-good.yaml
+
+  # Challenge Firefox AI previews
+  - import: (data)/clients/x-firefox-ai.yaml
+
+  # Allow common "keeping the internet working" routes (well-known, favicon, robots.txt)
+  - import: (data)/common/keep-internet-working.yaml
+
+  # Requires a subscription to Thoth to use, see
+  # https://anubis.techaro.lol/docs/admin/thoth#geoip-based-filtering
+  - name: countries-with-aggressive-scrapers
+    action: WEIGH
+    geoip:
+      countries:
+        - BR
+        - CN
+    weight:
+      adjust: 10
+
+  # Requires a subscription to Thoth to use, see
+  # https://anubis.techaro.lol/docs/admin/thoth#asn-based-filtering
+  - name: aggressive-asns-without-functional-abuse-contact
+    action: WEIGH
+    asns:
+      match:
+        - 13335 # Cloudflare
+        - 136907 # Huawei Cloud
+        - 45102 # Alibaba Cloud
+    weight:
+      adjust: 10
+
+  # Generic catchall rule
+  - name: generic-browser
+    user_agent_regex: >-
+      Mozilla|Opera
+    action: WEIGH
+    weight:
+      adjust: 10
+
+dnsbl: false
+
+openGraph:
+  enabled: false
+  considerHost: false
+  ttl: 24h
+
+status_codes:
+  CHALLENGE: 200
+  DENY: 200
+
+store:
+  backend: bbolt
+  parameters:
+    path: /data/anubis.bdb
+
+thresholds:
+  - name: minimal-suspicion
+    expression: weight <= 0
+    action: ALLOW
+  - name: mild-suspicion
+    expression:
+      all:
+        - weight > 0
+        - weight < 10
+    action: CHALLENGE
+    challenge:
+      algorithm: metarefresh
+      difficulty: 1
+      report_as: 1
+  - name: moderate-suspicion
+    expression:
+      all:
+        - weight >= 10
+        - weight < 20
+    action: CHALLENGE
+    challenge:
+      algorithm: fast
+      difficulty: 2
+      report_as: 2
+  - name: extreme-suspicion
+    expression: weight >= 20
+    action: CHALLENGE
+    challenge:
+      algorithm: fast
+      difficulty: 4
+      report_as: 4

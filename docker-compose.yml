@@ -23,6 +23,29 @@ services:
       - BIND=:8080
       - DIFFICULTY=4
       - TARGET=http://forgejo:3000
+      - REDIRECT_DOMAINS=code.ffmpeg.org
+      - ED25519_PRIVATE_KEY_HEX=${ANUBIS_PRIV_KEY}
+      - POLICY_FNAME=/botPolicy.yaml
+    volumes:
+      - anubis-data:/data
+      - ./anubis/botPolicy.yaml:/botPolicy.yaml
+    healthcheck:
+      test: ["CMD", "anubis", "--healthcheck"]
+      interval: 5s
+      timeout: 30s
+      retries: 5
+      start_period: 500ms
+    depends_on:
+      chown_anubis_volume:
+        condition: service_completed_successfully
+    user: "982:982"
+  chown_anubis_volume:
+    image: busybox:latest
+    user: root
+    command: chown -R 982:982 /data
+    restart: no
+    volumes:
+      - anubis-data:/data
   forgejo:
     image: codeberg.org/forgejo/forgejo:12
     environment:
@@ -181,6 +204,7 @@ services:
       - VALKEY_EXTRA_FLAGS=/etc/valkey.conf
 
 volumes:
+  anubis-data:
   db-data:
   db-socket:
   valkey-data:
