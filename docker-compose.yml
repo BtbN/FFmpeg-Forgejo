@@ -53,6 +53,7 @@ services:
       - USER_GID=981
       - FORGEJO__server__DOMAIN=code.ffmpeg.org
       - FORGEJO__service__NO_REPLY_ADDRESS=noreply.code.ffmpeg.org
+      - FORGEJO__actions__DEFAULT_ACTIONS_URL=https://code.ffmpeg.org
       - FORGEJO__ui__DEFAULT_SHOW_FULL_NAME=true
       - FORGEJO__repository.signing__SIGNING_KEY=/data/gitea/conf/signing_key_ed25519.pub
       - FORGEJO__repository.signing__FORMAT=ssh
