@@ -74,7 +74,7 @@ services:
       - FORGEJO__database__USER=${FORGEJO_DB_USER}
       - FORGEJO__database__PASSWD=${FORGEJO_DB_PASSWORD}
       - FORGEJO__cache__ADAPTER=redis
-      - FORGEJO__cache__HOST=redis+socket:///var/valkey.sock?db=0&pool_size=100&idle_timeout=180s
+      - FORGEJO__cache__HOST=redis+socket:///run/valkey/valkey.sock?db=0&pool_size=100&idle_timeout=180s
       - FORGEJO__cache__ITEM_TTL=72h
       - FORGEJO__server__LANDING_PAGE=/FFmpeg
       - FORGEJO__storage__STORAGE_TYPE=minio
@@ -102,7 +102,7 @@ services:
       - FORGEJO__email.incoming__USERNAME=${IMAP_USER}
       - FORGEJO__email.incoming__PASSWORD=${IMAP_PASS}
       - FORGEJO__queue__TYPE=redis
-      - FORGEJO__queue__CONN_STR=redis+socket:///var/valkey_queue.sock?db=0&pool_size=25&idle_timeout=180s
+      - FORGEJO__queue__CONN_STR=redis+socket:///run/valkey/valkey_queue.sock?db=0&pool_size=25&idle_timeout=180s
       - FORGEJO__repository.pull-request__DEFAULT_MERGE_STYLE=rebase
       - FORGEJO__repository__USE_COMPAT_SSH_URI=false
       - FORGEJO__cron.repo_health_check__TIMEOUT=300s
@@ -118,16 +118,7 @@ services:
       - /etc/timezone:/etc/timezone:ro
       - /etc/localtime:/etc/localtime:ro
       - db-socket:/run/mysqld
-      - type: volume
-        source: valkey-data
-        target: /var/valkey.sock
-        volume:
-          subpath: valkey.sock
-      - type: volume
-        source: valkey-queue-data
-        target: /var/valkey_queue.sock
-        volume:
-          subpath: valkey.sock
+      - valkey-sockets:/run/valkey
     ports:
       - 22:22/tcp
     depends_on:
@@ -193,6 +184,7 @@ services:
     volumes:
       - ./valkey/valkey.conf:/etc/valkey.conf
       - valkey-data:/data
+      - valkey-sockets:/run/valkey
     environment:
       - VALKEY_EXTRA_FLAGS=/etc/valkey.conf
   valkey_queue:
@@ -201,6 +193,7 @@ services:
     volumes:
       - ./valkey/valkey_queue.conf:/etc/valkey.conf
       - valkey-queue-data:/data
+      - valkey-sockets:/run/valkey
     environment:
       - VALKEY_EXTRA_FLAGS=/etc/valkey.conf
 
@@ -210,6 +203,12 @@ volumes:
   db-socket:
   valkey-data:
   valkey-queue-data:
+  valkey-sockets:
+    driver: local
+    driver_opts:
+      type: tmpfs
+      device: tmpfs
+      o: size=1m,mode=1777,nosuid,nodev
   caddy-data:
   caddy-config:
 
