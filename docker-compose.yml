@@ -201,6 +201,11 @@ volumes:
   anubis-data:
   db-data:
   db-socket:
+    driver: local
+    driver_opts:
+      type: tmpfs
+      device: tmpfs
+      o: size=1m,mode=1777,nosuid,nodev
   valkey-data:
   valkey-queue-data:
   valkey-sockets:
