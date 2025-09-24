@@ -172,6 +172,7 @@ services:
     volumes:
       - db-data:/var/lib/mysql
       - db-socket:/run/mysqld
+      - ./mariadb/my.cnf:/etc/mysql/conf.d/custom.cnf:ro
     healthcheck:
       test: ["CMD", "healthcheck.sh", "--connect", "--innodb_initialized"]
       start_period: 10s
