@@ -55,6 +55,8 @@ services:
       - FORGEJO__service__NO_REPLY_ADDRESS=noreply.code.ffmpeg.org
       - FORGEJO__actions__DEFAULT_ACTIONS_URL=https://code.ffmpeg.org
       - FORGEJO__ui__DEFAULT_SHOW_FULL_NAME=true
+      - FORGEJO__attachment__ALLOWED_TYPES=*/*
+      - FORGEJO__attachment__MAX_SIZE=50
       - FORGEJO__repository.signing__SIGNING_KEY=/data/gitea/conf/signing_key_ed25519.pub
       - FORGEJO__repository.signing__FORMAT=ssh
       - FORGEJO__repository.signing__SIGNING_NAME=FFmpeg Forgejo
@@ -73,6 +75,7 @@ services:
       - FORGEJO__database__NAME=${FORGEJO_DB_DATABASE}
       - FORGEJO__database__USER=${FORGEJO_DB_USER}
       - FORGEJO__database__PASSWD=${FORGEJO_DB_PASSWORD}
+      - FORGEJO__database__SLOW_QUERY_THRESHOLD=0.5s
       - FORGEJO__cache__ADAPTER=redis
       - FORGEJO__cache__HOST=redis+socket:///run/valkey/valkey.sock?db=0&pool_size=100&idle_timeout=180s
       - FORGEJO__cache__ITEM_TTL=72h
