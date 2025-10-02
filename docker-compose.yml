@@ -51,6 +51,9 @@ services:
     environment:
       - USER_UID=981
       - USER_GID=981
+      - GOMEMLIMIT=8GiB
+      - GOMAXPROCS=6
+      - FORGEJO__queue__MAX_WORKERS=2
       - FORGEJO__server__DOMAIN=code.ffmpeg.org
       - FORGEJO__service__NO_REPLY_ADDRESS=noreply.code.ffmpeg.org
       - FORGEJO__actions__DEFAULT_ACTIONS_URL=https://code.ffmpeg.org
