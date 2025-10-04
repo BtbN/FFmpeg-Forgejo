@@ -12,7 +12,7 @@
 
 bots:
   - name: expensive-endpoints
-    path_regex: ^.*/blame/.*$
+    path_regex: ^.*/(blame|archive)/.*$
     action: CHALLENGE
     challenge:
       algorithm: fast
