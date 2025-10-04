@@ -18,6 +18,13 @@ bots:
       algorithm: fast
       difficulty: 6
       report_as: 4
+  - name: weird-bot-block
+    user_agent_regex: "^Mozilla\\/5\\.0 \\(Macintosh; Intel Mac OS X 10_15_7\\) AppleWebKit\\/537\\.36 \\(KHTML, like Gecko\\) Chrome\\/125\\.0\\.0\\.0 Safari\\/537\\.36$"
+    action: CHALLENGE
+    challenge:
+      algorithm: slow
+      difficulty: 16
+      report_as: 4
   # Pathological bots to deny
   - # This correlates to data/bots/_deny-pathological.yaml in the source tree
     # https://github.com/TecharoHQ/anubis/blob/main/data/bots/_deny-pathological.yaml
