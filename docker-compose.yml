@@ -47,7 +47,7 @@ services:
     volumes:
       - anubis-data:/data
   forgejo:
-    image: codeberg.org/forgejo/forgejo:12
+    image: codeberg.org/forgejo/forgejo:13
     environment:
       - USER_UID=981
       - USER_GID=981
