@@ -11,13 +11,6 @@
 ## /usr/share/docs/anubis/data or in the tarball you extracted Anubis from.
 
 bots:
-  - name: expensive-endpoints
-    path_regex: ^.*/(blame|archive)/.*$
-    action: CHALLENGE
-    challenge:
-      algorithm: fast
-      difficulty: 6
-      report_as: 4
   - name: weird-bot-block
     user_agent_regex: "^Mozilla\\/5\\.0 \\(Macintosh; Intel Mac OS X 10_15_7\\) AppleWebKit\\/537\\.36 \\(KHTML, like Gecko\\) Chrome\\/125\\.0\\.0\\.0 Safari\\/537\\.36$"
     action: CHALLENGE
@@ -106,6 +99,17 @@ bots:
   #   expression: load_15m <= 4.0 # make sure to end the load comparison in a .0
   #   weight:
   #     adjust: -10
+
+  - name: expensive-endpoints
+    expression:
+      all:
+        - userAgent.contains("Mozilla") || path.contains("/blame/")
+        - path.contains("/blame/") || path.contains("/archive/")
+    action: CHALLENGE
+    challenge:
+      algorithm: fast
+      difficulty: 6
+      report_as: 4
 
   # Generic catchall rule
   - name: generic-browser
