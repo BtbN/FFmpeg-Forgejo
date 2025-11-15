@@ -22,13 +22,21 @@ bots:
       difficulty: 6
       report_as: 4
 
+  - name: allow-ci-runners
+    expression:
+      all:
+        - userAgent.startsWith("connect-go/")
+        - path.startsWith("/api/actions/runner")
+    action: ALLOW
+
   - import: (data)/meta/default-config.yaml
+  - import: (data)/clients/docker-client.yaml
 
   - name: weird-bot-block
     user_agent_regex: "^Mozilla\\/5\\.0 \\(Macintosh; Intel Mac OS X 10_15_7\\) AppleWebKit\\/537\\.36 \\(KHTML, like Gecko\\) Chrome\\/125\\.0\\.0\\.0 Safari\\/537\\.36$"
     action: CHALLENGE
     challenge:
-      algorithm: slow
+      algorithm: fast
       difficulty: 16
       report_as: 4
 
