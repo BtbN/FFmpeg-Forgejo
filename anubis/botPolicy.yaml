@@ -25,7 +25,7 @@ bots:
   - name: allow-ci-runners
     expression:
       all:
-        - userAgent.startsWith("connect-go/")
+        - userAgent.startsWith("connect-go/") || userAgent.startsWith("GitNex/")
         - path.startsWith("/api/")
     action: ALLOW
 
