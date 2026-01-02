@@ -21,12 +21,15 @@ cp .env cur_backup/envfile.env
 
 docker compose stop forgejo
 
-docker compose exec -T db mariadb-dump --opt --single-transaction --extended-insert -u "$FORGEJO_DB_USER" --password="$FORGEJO_DB_PASSWORD" "$FORGEJO_DB_DATABASE" | gzip > cur_backup/database.sql.gz
 docker run --rm -u root -w / \
 	--mount type=bind,src=/,dst=/workdir \
 	ubuntu:latest cp -a --reflink=always "/workdir$FORGEJO_DATA_DIR" "/workdir$PWD/cur_backup/data"
+docker compose exec -T db mariadb-dump --opt --single-transaction --extended-insert -u "$FORGEJO_DB_USER" --password="$FORGEJO_DB_PASSWORD" "$FORGEJO_DB_DATABASE" | gzip > cur_backup/database.sql.gz &
+DUMP_PID="$!"
+sleep 5
 
 docker compose start forgejo
+wait "$DUMP_PID"
 
 docker run --rm -u root -w / \
 	--mount type=bind,src="$PWD"/cur_backup,dst=/cur_backup,readonly \
