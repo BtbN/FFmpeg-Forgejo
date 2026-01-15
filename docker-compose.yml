@@ -186,7 +186,7 @@ services:
       timeout: 5s
       retries: 3
   valkey_main:
-    image: valkey/valkey:8
+    image: valkey/valkey:9
     restart: unless-stopped
     volumes:
       - ./valkey/valkey.conf:/etc/valkey.conf
@@ -195,7 +195,7 @@ services:
     environment:
       - VALKEY_EXTRA_FLAGS=/etc/valkey.conf
   valkey_queue:
-    image: valkey/valkey:8
+    image: valkey/valkey:9
     restart: unless-stopped
     volumes:
       - ./valkey/valkey_queue.conf:/etc/valkey.conf
