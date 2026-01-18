@@ -116,11 +116,13 @@ services:
       - FORGEJO__log__LEVEL=Info
       - FORGEJO__log__STACKTRACE_LEVEL=None
       - FORGEJO__webhook__ALLOWED_HOST_LIST=external,ircbot
+      - FORGEJO__git__PATH=/usr/local/bin/git_wrap.sh
     restart: unless-stopped
     networks:
       - frontend
     volumes:
       - ${FORGEJO_DATA_DIR}:/data
+      - ./forgejo/git_wrap.sh:/usr/local/bin/git_wrap.sh:ro
       - /etc/timezone:/etc/timezone:ro
       - /etc/localtime:/etc/localtime:ro
       - db-socket:/run/mysqld
