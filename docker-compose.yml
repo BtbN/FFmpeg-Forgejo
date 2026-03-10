@@ -112,6 +112,7 @@ services:
       - FORGEJO__repository.pull-request__DEFAULT_MERGE_STYLE=rebase
       - FORGEJO__repository__USE_COMPAT_SSH_URI=false
       - FORGEJO__cron.repo_health_check__TIMEOUT=300s
+      - FORGEJO__actions__LOG_RETENTION_DAYS=14
       - FORGEJO__log__MODE=console
       - FORGEJO__log__LEVEL=Info
       - FORGEJO__log__STACKTRACE_LEVEL=None
