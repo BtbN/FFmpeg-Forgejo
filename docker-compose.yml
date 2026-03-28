@@ -142,7 +142,7 @@ services:
       context: .
       pull: true
       dockerfile_inline: |
-        FROM python:3.13-slim
+        FROM python:3.14-slim
         RUN pip install --no-cache --upgrade pip setuptools
         RUN pip install --no-cache https://github.com/BtbN/SimpleIrcRelay/archive/refs/heads/master.zip
     environment:
