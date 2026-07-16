@@ -5,6 +5,8 @@ cd "$(dirname "$0")"
 docker compose exec -u git forgejo bash -c '
 set -euo pipefail
 
+git -C /data/git/alternates/ffmpeg/ffmpeg.git fetch origin
+
 find /data/git/repositories -mindepth 2 -maxdepth 2 -type d -name "ffmpeg.git" | while read -r repo; do
     owner="$(basename "$(dirname "$repo")")"
     alt_file="$repo/objects/info/alternates"
@@ -19,7 +21,7 @@ find /data/git/repositories -mindepth 2 -maxdepth 2 -type d -name "ffmpeg.git" |
     fi
 
     mkdir -p "$(dirname "$alt_file")"
-    printf "../../../ffmpeg/ffmpeg.git/objects\n" >> "$alt_file"
+    printf "../../../../alternates/ffmpeg/ffmpeg.git/objects\n" >> "$alt_file"
     echo "created: $alt_file"
 done
 '
