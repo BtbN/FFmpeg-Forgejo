@@ -28,7 +28,7 @@ services:
       - POLICY_FNAME=/botPolicy.yaml
     volumes:
       - anubis-data:/data
-      - ./anubis/botPolicy.yaml:/botPolicy.yaml
+      - ./anubis/botPolicy.yaml:/botPolicy.yaml:ro
     healthcheck:
       test: ["CMD", "anubis", "--healthcheck"]
       interval: 5s
