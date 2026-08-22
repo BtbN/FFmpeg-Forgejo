@@ -1,8 +1,6 @@
 User-agent: Claude-User
 User-agent: Claude-SearchBot
-
 Crawl-delay: 1
-
 Disallow: /*/blame/
 Disallow: /*/*/archive/
 
@@ -19,18 +17,14 @@ Disallow: /*/*/labels
 Disallow: /*/*/activity/*
 Disallow: /vendor/*
 Disallow: /swagger.*.json
-
 Disallow: /explore/*?*
-
 Disallow: /repo/create
 Disallow: /repo/migrate
 Disallow: /org/create
 Disallow: /*/*/fork
-
 Disallow: /*/*/watchers
 Disallow: /*/*/stargazers
 Disallow: /*/*/forks
-
 Disallow: /*/*/activity
 Disallow: /*/*/projects
 Disallow: /*/*/commits/
@@ -38,14 +32,12 @@ Disallow: /*/*/branches
 Disallow: /*/*/tags
 Disallow: /*/*/compare
 Disallow: /*/*/lastcommit/*
-
 Disallow: /*/*/issues/new
 Disallow: /*/*/issues/?*
 Disallow: /*/*/issues?*
 Disallow: /*/*/pulls/?*
 Disallow: /*/*/pulls?*
 Disallow: /*/*/pulls/*/files
-
 Disallow: /*/tree/
 Disallow: /*/download
 Disallow: /*/revisions
@@ -60,12 +52,10 @@ Disallow: */.git/
 Disallow: /*.git
 Disallow: /*.atom
 Disallow: /*.rss
-
 Disallow: /*/*/archive/
 Disallow: *.bundle
 Disallow: */commit/*.patch
 Disallow: */commit/*.diff
-
 Disallow: /*lang=*
 Disallow: /*source=*
 Disallow: /*ref_cta=*
@@ -85,7 +75,6 @@ Disallow: /*commits?author=*
 Disallow: /*tab=*
 Disallow: /*q=*
 Disallow: /*repo-search-archived=*
-
 Crawl-delay: 2
 
 User-agent: Amazonbot
