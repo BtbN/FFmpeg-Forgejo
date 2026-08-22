@@ -1,3 +1,11 @@
+User-agent: Claude-User
+User-agent: Claude-SearchBot
+
+Crawl-delay: 1
+
+Disallow: /*/blame/
+Disallow: /*/*/archive/
+
 User-agent: *
 Disallow: /api/*
 Disallow: /avatars
@@ -87,7 +95,6 @@ User-agent: Bytespider
 User-agent: CCBot
 User-agent: ChatGPT-User
 User-agent: ClaudeBot
-User-agent: Claude-Web
 User-agent: cohere-ai
 User-agent: Diffbot
 User-agent: FacebookBot
