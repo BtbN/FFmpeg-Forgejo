@@ -5,6 +5,8 @@ Disallow: /*/blame/
 Disallow: /*/*/archive/
 
 User-agent: *
+Disallow: /*/*/rss/
+Disallow: /*/*/atom/
 Disallow: /api/*
 Disallow: /avatars
 Disallow: /user/*

@@ -21,6 +21,13 @@ bots:
       algorithm: fast
       difficulty: 6
 
+  - name: branch-feeds
+    path_regex: "^/[^/]+/[^/]+/(rss|atom)/"
+    action: CHALLENGE
+    challenge:
+      algorithm: fast
+      difficulty: 6
+
   - name: allow-ci-runners
     expression:
       all:
@@ -42,6 +49,28 @@ bots:
       algorithm: fast
       difficulty: 16
 
+  - name: headless-chrome
+    expression: '"Sec-Ch-Ua" in headers && headers["Sec-Ch-Ua"].contains("HeadlessChrome")'
+    action: DENY
+
+  - name: chrome-without-accept-language
+    expression:
+      all:
+        - userAgent.contains("Chrome/")
+        - '!("Accept-Language" in headers)'
+    action: CHALLENGE
+    challenge:
+      algorithm: fast
+      difficulty: 6
+
+  - name: linux-chrome-en-us
+    expression:
+      all:
+        - userAgent.contains("X11; Linux") && userAgent.contains("Chrome/")
+        - '"Accept-Language" in headers && headers["Accept-Language"] == "en-US,en;q=0.9"'
+    action: WEIGH
+    weight:
+      adjust: 30
 
 dnsbl: false
 
