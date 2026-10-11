@@ -42,6 +42,10 @@ bots:
   - import: (data)/meta/default-config.yaml
   - import: (data)/clients/docker-client.yaml
 
+  - name: crawler-209-147-81-138
+    remote_addresses: ["209.147.81.138/32"]
+    action: DENY
+
   - name: weird-bot-block
     user_agent_regex: "^Mozilla\\/5\\.0 \\(Macintosh; Intel Mac OS X 10_15_7\\) AppleWebKit\\/537\\.36 \\(KHTML, like Gecko\\) Chrome\\/125\\.0\\.0\\.0 Safari\\/537\\.36$"
     action: CHALLENGE
